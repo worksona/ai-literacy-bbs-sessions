@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Worksona AI Literacy User Guide | Effective Learning Strategies</title>
+    <style>
+        :root {
+            --primary-blue: #0066cc;
+            --orange-primary: #ff8c00;
+            --mustard: #b8860b;
+            --dark-bg: #1a1a1a;
+            --light-bg: #f8fafc;
+            --text-dark: #2d3748;
+            --text-light: #4a5568;
+            --border-color: #e2e8f0;
+            --success-green: #38a169;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: var(--text-dark);
+            background: var(--light-bg);
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--orange-primary) 100%);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .header .subtitle {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            margin-bottom: 1rem;
+        }
+
+        .header .description {
+            font-size: 1.1rem;
+            opacity: 0.8;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .section h2 {
+            color: var(--primary-blue);
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 3px solid var(--orange-primary);
+            padding-bottom: 0.5rem;
+        }
+
+        .quick-start {
+            background: linear-gradient(135deg, var(--success-green) 0%, #48bb78 100%);
+            color: white;
+            border-left: none;
+        }
+
+        .quick-start h2 {
+            color: white;
+            border-bottom-color: rgba(255,255,255,0.3);
+        }
+
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .step-card {
+            background: rgba(255,255,255,0.1);
+            padding: 1.5rem;
+            border-radius: 8px;
+            backdrop-filter: blur(10px);
+        }
+
+        .step-number {
+            background: white;
+            color: var(--success-green);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .back-link {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: var(--orange-primary);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 500;
+            z-index: 1000;
+            transition: all 0.2s;
+        }
+
+        .back-link:hover {
+            background: var(--mustard);
+            transform: translateY(-1px);
+        }
+
+        @media (max-width: 768px) {
+            .container { padding: 1rem; }
+            .header h1 { font-size: 2rem; }
+            .steps-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="back-link">← Back to Toolkit</a>
+
+    <div class="header">
+        <h1>Worksona AI Literacy User Guide</h1>
+        <p class="subtitle">Proven Strategies Taught in Effective and Efficient Lessons</p>
+        <p class="description">Complete guide to mastering business AI literacy through our proven toolkit approach</p>
+    </div>
+
+    <div class="container">
+        <!-- Quick Start -->
+        <div class="section quick-start">
+            <h2>🚀 Quick Start Guide</h2>
+            <div class="steps-grid">
+                <div class="step-card">
+                    <div class="step-number">1</div>
+                    <h3>Choose Your Strategy</h3>
+                    <p>Each session teaches proven strategies for specific business scenarios. Start with Session 1 for foundational skills or jump to your priority area.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">2</div>
+                    <h3>Copy & Paste Into Any LLM</h3>
+                    <p>Open ChatGPT, Claude, or any AI assistant. Copy the entire session content and paste it into the chat. No setup required!</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">3</div>
+                    <h3>Learn in 15 Minutes</h3>
+                    <p>Type "1" to start the Session Wizard. Follow the effective lesson flow for rapid skill acquisition with immediate business application.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- More sections would follow -->
+        <div class="section">
+            <h2>Complete User Guide</h2>
+            <p style="text-align: center; font-size: 1.1rem; color: var(--text-light); margin: 2rem 0;">
+                Access the complete user guide with detailed instructions, learning pathways, and troubleshooting tips.
+            </p>
+            <div style="text-align: center;">
+                <a href="index.html" style="display: inline-block; background: var(--primary-blue); color: white; padding: 1rem 2rem; border-radius: 8px; text-decoration: none; font-weight: 600;">Access Full Toolkit →</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
