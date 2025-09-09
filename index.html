@@ -2123,35 +2123,59 @@ Advanced Techniques Mastered:
         
         // Make API call to LLM
         async function callLLM(messages) {
+            console.log('🔍 callLLM called with:', { 
+                serverlessAvailable, 
+                serverlessStatus, 
+                apiProvider,
+                messagesCount: messages.length 
+            });
+            
             // Prioritize serverless functions if available
             const useServerless = serverlessAvailable && (
                 (apiProvider === 'openai' && serverlessStatus.openai) ||
                 (apiProvider === 'anthropic' && serverlessStatus.anthropic)
             );
             
+            console.log('🎯 Using serverless:', useServerless);
+            
             if (useServerless) {
-                // Use Netlify serverless functions
-                const endpoint = apiProvider === 'openai' ? '/api/openai-chat' : '/api/anthropic-chat';
-                const requestBody = {
-                    messages: messages,
-                    model: apiProvider === 'openai' ? 'gpt-4' : 'claude-3-5-sonnet-20241022'
-                };
+                try {
+                    console.log('🚀 Making serverless API call...');
+                    // Use Netlify serverless functions
+                    const endpoint = apiProvider === 'openai' ? '/api/openai-chat' : '/api/anthropic-chat';
+                    const requestBody = {
+                        messages: messages,
+                        model: apiProvider === 'openai' ? 'gpt-4' : 'claude-3-5-sonnet-20241022'
+                    };
 
-                const response = await fetch(endpoint, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(requestBody)
-                });
+                    console.log('📤 Request:', { endpoint, requestBody });
 
-                if (!response.ok) {
-                    const errorData = await response.text();
-                    throw new Error(`API request failed: ${response.status} ${errorData}`);
+                    const response = await fetch(endpoint, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(requestBody)
+                    });
+
+                    console.log('📥 Response status:', response.status);
+
+                    if (!response.ok) {
+                        const errorData = await response.text();
+                        console.error('❌ API request failed:', response.status, errorData);
+                        throw new Error(`API request failed: ${response.status} ${errorData}`);
+                    }
+
+                    const data = await response.json();
+                    console.log('✅ Response data:', data);
+                    
+                    const result = apiProvider === 'openai' ? data.choices[0].message.content : data.content[0].text;
+                    console.log('🎉 Final result:', result);
+                    return result;
+                } catch (error) {
+                    console.error('💥 Serverless call failed:', error);
+                    throw error;
                 }
-
-                const data = await response.json();
-                return apiProvider === 'openai' ? data.choices[0].message.content : data.content[0].text;
             } else if (apiKey && isConnected) {
                 // Fallback to user's API key
             const requestBody = {
@@ -2908,14 +2932,22 @@ Type 'm' for main menu or select a new session to continue learning.`;
                 let response;
                 
                 
-                if (currentSession && isConnected) {
-                    // Use enhanced LLM processing for loaded sessions with API key
+                // Check if we have any AI capability (serverless or API key)
+                const hasAI = serverlessAvailable || isConnected;
+                
+                console.log('🤖 AI Check:', { serverlessAvailable, isConnected, hasAI, currentSession });
+                
+                if (currentSession && hasAI) {
+                    // Use enhanced LLM processing for loaded sessions with AI capability
+                    console.log('📚 Using LLM for session processing');
                     response = await processSessionWithLLM(message);
                 } else if (currentSession) {
-                    // Use local session processing for loaded sessions without API key
+                    // Use local session processing for loaded sessions without AI
+                    console.log('💻 Using local session processing');
                     response = await processSessionInput(message);
-                } else if (isConnected) {
-                    // Use LLM for general chat when API key is available
+                } else if (hasAI) {
+                    // Use LLM for general chat when AI is available
+                    console.log('💬 Using LLM for general chat');
                     const systemPrompt = "You are an AI learning assistant for BBS Sessions. Help users understand how to use the interactive AI learning sessions. Be helpful and guide them to try the sessions.";
                     const messages = [
                         { role: 'system', content: systemPrompt },
@@ -2928,7 +2960,8 @@ Type 'm' for main menu or select a new session to continue learning.`;
                     
                     response = await callLLM(messages);
                 } else {
-                    // Fallback to local chat when no API key
+                    // Fallback to local chat when no AI available
+                    console.log('🏠 Using local chat fallback');
                     response = handleGeneralChat(message);
                 }
                 
