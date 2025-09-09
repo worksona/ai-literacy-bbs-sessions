@@ -25,19 +25,36 @@ exports.handler = async (event, context) => {
   }
 
   try {
+    // Log environment variables for debugging
+    console.log('Environment check:', {
+      hasOpenAIKey: !!process.env.OPENAI_API_KEY,
+      keyPrefix: process.env.OPENAI_API_KEY ? process.env.OPENAI_API_KEY.substring(0, 7) + '...' : 'none',
+      nodeEnv: process.env.NODE_ENV,
+      netlifyContext: process.env.CONTEXT,
+      allEnvKeys: Object.keys(process.env).filter(key => key.includes('OPENAI') || key.includes('API'))
+    });
+
     const { messages, model = 'gpt-4' } = JSON.parse(event.body);
     
     // Get API key from environment variable
     const apiKey = process.env.OPENAI_API_KEY;
     
     if (!apiKey) {
+      console.error('OpenAI API key not found. Available env vars:', Object.keys(process.env).sort());
       return {
         statusCode: 500,
         headers: {
           'Access-Control-Allow-Origin': '*',
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ error: 'OpenAI API key not configured' })
+        body: JSON.stringify({ 
+          error: 'OpenAI API key not configured',
+          debug: {
+            context: process.env.CONTEXT,
+            nodeEnv: process.env.NODE_ENV,
+            hasKey: !!process.env.OPENAI_API_KEY
+          }
+        })
       };
     }
 

@@ -16,11 +16,23 @@ In your Netlify dashboard, go to **Site settings > Environment variables** and a
 
 ### Setting Environment Variables
 
-1. Log into your Netlify dashboard
-2. Navigate to your site
-3. Go to **Site settings** > **Environment variables**
-4. Click **Add a variable**
-5. Add the required variables above
+1. **Log into your Netlify dashboard**
+2. **Navigate to your site**
+3. **Go to Site settings > Environment variables**
+4. **Click "Add a variable"**
+5. **Add OPENAI_API_KEY:**
+   - Key: `OPENAI_API_KEY` (exactly as shown, case-sensitive)
+   - Value: Your OpenAI API key (starts with `sk-`)
+   - Scopes: Leave as "All scopes" (default)
+6. **Add ANTHROPIC_API_KEY (optional):**
+   - Key: `ANTHROPIC_API_KEY` (exactly as shown, case-sensitive)  
+   - Value: Your Anthropic API key
+   - Scopes: Leave as "All scopes" (default)
+7. **Click "Save"**
+8. **Important: Trigger a new deploy**
+   - Go to "Deploys" tab
+   - Click "Trigger deploy" > "Deploy site"
+   - Environment variables only take effect after a new deployment
 
 ## Deployment Steps
 
@@ -129,17 +141,41 @@ The deployment includes two serverless functions:
 
 ## Troubleshooting
 
+### Environment Variables Not Loading
+
+1. **Check Environment Variable Names**
+   - Must be exactly: `OPENAI_API_KEY` (case-sensitive)
+   - Must be exactly: `ANTHROPIC_API_KEY` (case-sensitive)
+
+2. **Verify in Netlify Dashboard**
+   - Go to Site settings > Environment variables
+   - Ensure variables are set for "All scopes" or "All deploy contexts"
+   - Click "Edit" to verify the values are correct
+
+3. **Test Environment Variables**
+   ```bash
+   # Test the environment check function
+   curl https://your-site.netlify.app/.netlify/functions/test-env
+   ```
+
+4. **Redeploy After Adding Variables**
+   - Environment variables only take effect after a new deploy
+   - Trigger a new deploy after adding/changing variables
+   - Go to Deploys tab and click "Trigger deploy" > "Deploy site"
+
 ### Common Issues
 
 1. **Functions not working**
    - Check environment variables are set in Netlify dashboard
    - Verify function paths in `netlify.toml`
    - Check function logs in Netlify dashboard
+   - **Important**: Redeploy after adding environment variables
 
 2. **API key errors**
-   - Ensure environment variables are correctly named
+   - Ensure environment variables are correctly named (case-sensitive)
    - Verify API keys are valid and have sufficient credits
    - Check API key permissions
+   - Use the test function to verify variables are loaded
 
 3. **CORS errors**
    - Functions include proper CORS headers
