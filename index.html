@@ -2082,7 +2082,7 @@ Advanced Techniques Mastered:
                 const endpoint = apiProvider === 'openai' ? '/api/openai-chat' : '/api/anthropic-chat';
                 const requestBody = {
                     messages: messages,
-                    model: apiProvider === 'openai' ? 'gpt-4o-mini' : 'claude-3-5-sonnet-20241022'
+                    model: apiProvider === 'openai' ? 'gpt-4' : 'claude-3-5-sonnet-20241022'
                 };
 
                 const response = await fetch(endpoint, {

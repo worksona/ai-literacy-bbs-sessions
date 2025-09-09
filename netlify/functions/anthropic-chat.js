@@ -25,7 +25,9 @@ exports.handler = async (event, context) => {
   }
 
   try {
-    const { messages, model = 'claude-3-sonnet-20240229' } = JSON.parse(event.body);
+    const { messages, model = 'claude-3-5-sonnet-20241022' } = JSON.parse(event.body);
+    
+    console.log('Anthropic function called with model:', model);
     
     // Get API key from environment variable
     const apiKey = process.env.ANTHROPIC_API_KEY;
@@ -46,6 +48,7 @@ exports.handler = async (event, context) => {
     const conversationMessages = messages.filter(m => m.role !== 'system');
 
     // Make request to Anthropic API
+    console.log('Making request to Anthropic with model:', model);
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
