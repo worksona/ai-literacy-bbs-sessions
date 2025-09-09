@@ -740,36 +740,6 @@
             z-index: 20;
         }
         
-        .serverless-notice {
-            padding: 0.75rem 2rem;
-            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
-            border-bottom: 1px solid #b8daff;
-            border-left: 4px solid #28a745;
-            position: sticky;
-            top: 48px;
-            z-index: 20;
-        }
-
-        .notice-content {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .notice-icon {
-            font-size: 1.2rem;
-        }
-
-        .notice-text strong {
-            color: #155724;
-            font-size: 0.9rem;
-        }
-
-        .notice-text small {
-            color: #155724;
-            opacity: 0.8;
-            font-size: 0.8rem;
-        }
         
         .api-key-section {
             background: #f8fafc;
@@ -1789,15 +1759,6 @@ Advanced Techniques Mastered:
                             <button class="session-btn" onclick="clearChat()" style="margin-left: 0.5rem;">Clear</button>
                         </div>
                     </div>
-                    <div id="serverlessNotice" class="serverless-notice" style="display: none;">
-                        <div class="notice-content">
-                            <span class="notice-icon">🚀</span>
-                            <div class="notice-text">
-                                <strong>Hosted AI Ready!</strong><br>
-                                <small>Full AI features available - no API key required.</small>
-                            </div>
-                        </div>
-                    </div>
                     <div class="api-key-section">
                         <select class="api-provider-select" id="apiProvider">
                             <option value="openai">OpenAI (GPT)</option>
@@ -1901,11 +1862,6 @@ Advanced Techniques Mastered:
                     
                     console.log('Serverless functions available:', serverlessStatus);
                     
-                    // Show serverless notice if available
-                    const serverlessNotice = document.getElementById('serverlessNotice');
-                    if (serverlessAvailable && serverlessNotice) {
-                        serverlessNotice.style.display = 'block';
-                    }
                     
                     updateApiStatus();
                     return true;
