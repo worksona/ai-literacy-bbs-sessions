@@ -2032,49 +2032,74 @@ Advanced Techniques Mastered:
         
         // Make API call to LLM
         async function callLLM(messages) {
-            if (!isConnected) {
-                throw new Error('API key not configured');
-            }
+            // Check if we're in development (has API key) or production (use serverless functions)
+            const isDevelopment = apiKey && isConnected;
             
-            const requestBody = {
-                model: apiProvider === 'openai' ? 'gpt-4o-mini' : 'claude-3-5-sonnet-20241022',
-                messages: messages,
-                max_tokens: 2000,
-                temperature: 0.3
-            };
-            
-            const apiUrl = apiProvider === 'openai' 
-                ? 'https://api.openai.com/v1/chat/completions'
-                : 'https://api.anthropic.com/v1/messages';
-            
-            const headers = {
-                'Content-Type': 'application/json',
-                'Authorization': apiProvider === 'openai' 
-                    ? `Bearer ${apiKey}`
-                    : `Bearer ${apiKey}`,
-            };
-            
-            if (apiProvider === 'anthropic') {
-                headers['anthropic-version'] = '2023-06-01';
-                requestBody.max_tokens = 2000;
-            }
-            
-            const response = await fetch(apiUrl, {
-                method: 'POST',
-                headers: headers,
-                body: JSON.stringify(requestBody)
-            });
-            
-            if (!response.ok) {
-                throw new Error(`API Error: ${response.status} ${response.statusText}`);
-            }
-            
-            const data = await response.json();
-            
-            if (apiProvider === 'openai') {
-                return data.choices[0].message.content;
+            if (isDevelopment) {
+                // Development mode - use direct API calls with user's API key
+                const requestBody = {
+                    model: apiProvider === 'openai' ? 'gpt-4o-mini' : 'claude-3-5-sonnet-20241022',
+                    messages: messages,
+                    max_tokens: 2000,
+                    temperature: 0.3
+                };
+                
+                const apiUrl = apiProvider === 'openai' 
+                    ? 'https://api.openai.com/v1/chat/completions'
+                    : 'https://api.anthropic.com/v1/messages';
+                
+                const headers = {
+                    'Content-Type': 'application/json',
+                    'Authorization': apiProvider === 'openai' 
+                        ? `Bearer ${apiKey}`
+                        : `Bearer ${apiKey}`,
+                };
+                
+                if (apiProvider === 'anthropic') {
+                    headers['anthropic-version'] = '2023-06-01';
+                    requestBody.max_tokens = 2000;
+                }
+                
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: headers,
+                    body: JSON.stringify(requestBody)
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`API Error: ${response.status} ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                
+                if (apiProvider === 'openai') {
+                    return data.choices[0].message.content;
+                } else {
+                    return data.content[0].text;
+                }
             } else {
-                return data.content[0].text;
+                // Production mode - use Netlify serverless functions
+                const endpoint = apiProvider === 'openai' ? '/api/openai-chat' : '/api/anthropic-chat';
+                const requestBody = {
+                    messages: messages,
+                    model: apiProvider === 'openai' ? 'gpt-4o-mini' : 'claude-3-5-sonnet-20241022'
+                };
+
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(requestBody)
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.text();
+                    throw new Error(`API request failed: ${response.status} ${errorData}`);
+                }
+
+                const data = await response.json();
+                return data.choices[0].message.content;
             }
         }
         

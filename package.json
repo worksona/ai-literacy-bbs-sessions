@@ -1,0 +1,25 @@
+{
+  "name": "worksona-ai-literacy-bbs",
+  "version": "1.0.0",
+  "description": "Worksona AI Literacy Toolkit - BBS Sessions",
+  "main": "index.html",
+  "scripts": {
+    "dev": "netlify dev",
+    "build": "echo 'No build step required'",
+    "deploy": "netlify deploy --prod"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "netlify-cli": "^17.0.0"
+  },
+  "keywords": [
+    "ai",
+    "literacy",
+    "bbs",
+    "training",
+    "business",
+    "worksona"
+  ],
+  "author": "Worksona",
+  "license": "MIT"
+}
