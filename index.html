@@ -770,7 +770,7 @@
             opacity: 0.8;
             font-size: 0.8rem;
         }
-
+        
         .api-key-section {
             background: #f8fafc;
             padding: 1rem 2rem;
@@ -2123,58 +2123,14 @@ Advanced Techniques Mastered:
         
         // Make API call to LLM
         async function callLLM(messages) {
-            // Prefer serverless functions if available, fallback to user API key
+            // Prioritize serverless functions if available
             const useServerless = serverlessAvailable && (
                 (apiProvider === 'openai' && serverlessStatus.openai) ||
                 (apiProvider === 'anthropic' && serverlessStatus.anthropic)
             );
             
-            const isDevelopment = !useServerless && apiKey && isConnected;
-            
-            if (isDevelopment) {
-                // Development mode - use direct API calls with user's API key
-            const requestBody = {
-                model: apiProvider === 'openai' ? 'gpt-4o-mini' : 'claude-3-5-sonnet-20241022',
-                messages: messages,
-                    max_tokens: 2000,
-                    temperature: 0.3
-            };
-            
-            const apiUrl = apiProvider === 'openai' 
-                ? 'https://api.openai.com/v1/chat/completions'
-                : 'https://api.anthropic.com/v1/messages';
-            
-            const headers = {
-                'Content-Type': 'application/json',
-                'Authorization': apiProvider === 'openai' 
-                    ? `Bearer ${apiKey}`
-                    : `Bearer ${apiKey}`,
-            };
-            
-            if (apiProvider === 'anthropic') {
-                headers['anthropic-version'] = '2023-06-01';
-                    requestBody.max_tokens = 2000;
-            }
-            
-            const response = await fetch(apiUrl, {
-                method: 'POST',
-                headers: headers,
-                body: JSON.stringify(requestBody)
-            });
-            
-            if (!response.ok) {
-                throw new Error(`API Error: ${response.status} ${response.statusText}`);
-            }
-            
-            const data = await response.json();
-            
-            if (apiProvider === 'openai') {
-                return data.choices[0].message.content;
-            } else {
-                return data.content[0].text;
-            }
-            } else if (useServerless) {
-                // Production mode - use Netlify serverless functions
+            if (useServerless) {
+                // Use Netlify serverless functions
                 const endpoint = apiProvider === 'openai' ? '/api/openai-chat' : '/api/anthropic-chat';
                 const requestBody = {
                     messages: messages,
@@ -2195,7 +2151,42 @@ Advanced Techniques Mastered:
                 }
 
                 const data = await response.json();
-                return data.choices[0].message.content;
+                return apiProvider === 'openai' ? data.choices[0].message.content : data.content[0].text;
+            } else if (apiKey && isConnected) {
+                // Fallback to user's API key
+            const requestBody = {
+                model: apiProvider === 'openai' ? 'gpt-4o-mini' : 'claude-3-5-sonnet-20241022',
+                messages: messages,
+                    max_tokens: 2000,
+                    temperature: 0.3
+            };
+            
+            const apiUrl = apiProvider === 'openai' 
+                ? 'https://api.openai.com/v1/chat/completions'
+                : 'https://api.anthropic.com/v1/messages';
+            
+            const headers = {
+                'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${apiKey}`
+            };
+            
+            if (apiProvider === 'anthropic') {
+                headers['anthropic-version'] = '2023-06-01';
+            }
+            
+            const response = await fetch(apiUrl, {
+                method: 'POST',
+                headers: headers,
+                body: JSON.stringify(requestBody)
+            });
+            
+            if (!response.ok) {
+                    const errorData = await response.text();
+                    throw new Error(`API request failed: ${response.status} ${errorData}`);
+            }
+            
+            const data = await response.json();
+                return apiProvider === 'openai' ? data.choices[0].message.content : data.content[0].text;
             } else {
                 // No API available - return helpful message
                 throw new Error('AI features require either an API key or hosted service. Please add your API key or contact support.');
