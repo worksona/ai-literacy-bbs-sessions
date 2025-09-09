@@ -9,6 +9,7 @@
     <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-okaidia.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
     <style>
         :root {
             --orange-primary: #ff8c00;
@@ -161,23 +162,62 @@
             gap: 1rem;
             flex-wrap: wrap;
         }
+        
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
 
-        .help-link {
+        .icon-btn {
             color: white;
             text-decoration: none;
             opacity: 0.7;
-            transition: all 0.2s;
-            padding: 0.25rem;
-            border-radius: 4px;
+            transition: all 0.2s ease;
+            padding: 0.5rem;
+            border-radius: 6px;
             display: flex;
             align-items: center;
             justify-content: center;
+            cursor: pointer;
+            border: none;
+            background: transparent;
         }
 
-        .help-link:hover {
+        .icon-btn:hover {
             opacity: 1;
             background: rgba(255, 255, 255, 0.1);
             transform: scale(1.1);
+        }
+        
+        .download-btn {
+            background: var(--orange-primary);
+            opacity: 1;
+        }
+        
+        .download-btn:hover {
+            background: #e67e00;
+            transform: translateY(-1px) scale(1.05);
+            box-shadow: 0 4px 12px rgba(255, 140, 0, 0.3);
+        }
+        
+        .download-btn:active {
+            transform: translateY(0);
+        }
+        
+        .download-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .github-link:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
         
         .header h1 {
@@ -203,6 +243,14 @@
             .header-content {
                 flex-direction: column;
                 gap: 0.25rem;
+            }
+            
+            .header-actions {
+                margin-top: 0.5rem;
+            }
+            
+            .icon-btn {
+                padding: 0.4rem;
             }
         }
         
@@ -294,6 +342,33 @@
         
         .curriculum-intro p:last-child {
             margin-bottom: 0;
+        }
+        
+        .download-highlight {
+            background: linear-gradient(135deg, var(--orange-light) 0%, rgba(255, 140, 0, 0.05) 100%);
+            border: 1px solid rgba(255, 140, 0, 0.2);
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .download-highlight p {
+            color: #2d3748 !important;
+            margin-bottom: 0 !important;
+        }
+        
+        .download-link {
+            color: var(--orange-primary) !important;
+            text-decoration: none;
+            font-weight: 600;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s ease;
+        }
+        
+        .download-link:hover {
+            color: #e67e00 !important;
+            border-bottom-color: #e67e00;
+            text-shadow: 0 1px 2px rgba(255, 140, 0, 0.2);
         }
         
         .curriculum-stats {
@@ -392,9 +467,12 @@
         }
         
         .session-header {
-            padding: 1.25rem;
-            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-            border-bottom: 1px solid #e2e8f0;
+            padding: 0.75rem 1rem;
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            border-bottom: 1px solid #475569;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
         }
         
         .session-content {
@@ -486,15 +564,20 @@
         }
         
         .session-number {
-            display: inline-block;
-            background: linear-gradient(135deg, #0066cc 0%, var(--orange-primary) 100%);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--orange-primary);
             color: white;
-            padding: 0.25rem 0.75rem;
-            border-radius: 3px;
-            font-size: 0.875rem;
-            font-weight: 500;
-            margin-bottom: 1rem;
-            box-shadow: 0 2px 4px var(--orange-light);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            min-width: 2.5rem;
+            height: 1.5rem;
+            flex-shrink: 0;
         }
         
         .session-snippet {
@@ -516,18 +599,25 @@
         }
         
         .session-title {
-            font-size: 1.25rem;
+            font-size: 1rem;
             font-weight: 600;
-            margin-bottom: 0.5rem;
+            color: white;
+            margin: 0;
+            flex: 1;
+        }
+        
+        .session-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 0.125rem;
         }
         
         .session-subtitle {
-            font-size: 0.875rem;
-            color: #718096;
-            margin-bottom: 1rem;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
+            font-size: 0.75rem;
+            color: #94a3b8;
+            margin: 0;
+            font-weight: 400;
         }
         
         .session-description {
@@ -1293,13 +1383,27 @@
                 <h1>Worksona AI Literacy -- for business</h1>
                 <p class="subtitle">Proven Strategies Taught in Effective and Efficient Lessons</p>
             </div>
-            <a href="userguide.html" target="_blank" class="help-link" title="User Guide">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="12" r="10"/>
-                    <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
-                    <path d="M12 17h.01"/>
-                </svg>
-            </a>
+            <div class="header-actions">
+                <button class="icon-btn download-btn" onclick="downloadAllSessions()" title="Download All Sessions">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="7,10 12,15 17,10"/>
+                        <line x1="12" y1="15" x2="12" y2="3"/>
+                    </svg>
+                </button>
+                <a href="https://github.com/worksona/ai-literacy-bbs-sessions" target="_blank" class="icon-btn github-link" title="View on GitHub">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
+                    </svg>
+                </a>
+                <a href="userguide.html" target="_blank" class="icon-btn help-link" title="User Guide">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"/>
+                        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+                        <path d="M12 17h.01"/>
+                    </svg>
+                </a>
+            </div>
         </header>
         
         <div class="main-layout">
@@ -1318,6 +1422,11 @@
                 <div class="pane-content">
                     <div class="curriculum-intro">
                         <h3>AI Literacy Toolkit: Proven Strategies for Business Success</h3>
+                        
+                        <div class="download-highlight">
+                            <p><strong>📦 Most Portable Option:</strong> <a href="#" onclick="downloadAllSessions(); return false;" class="download-link">Download all sessions as ZIP</a> — This is the most portable way to use our literacy tool. Download once, then copy and paste sessions into any LLM (ChatGPT, Claude, Gemini, etc.) for immediate training deployment across your organization.</p>
+                        </div>
+                        
                         <p>This business-focused toolkit provides proven strategies taught through effective and efficient lessons. Each session delivers measurable ROI through improved productivity, reduced operational costs, and enhanced decision-making capabilities.</p>
                         <p><strong>BBS-Style Experience:</strong> Inspired by the text-based interfaces of old-school bulletin board systems, this toolkit champions a ruthless economy of function over form. The minimal, terminal-style interface eliminates distractions and focuses purely on learning efficiency—proving that sometimes the most powerful tools are the simplest ones.</p>
                         
@@ -1344,8 +1453,10 @@
                 <div class="session-card">
                     <div class="session-header">
                         <div class="session-number">Session 1</div>
-                        <h3 class="session-title">Prompting Mastery</h3>
-                        <div class="session-subtitle">Zero-Shot Prompting Fundamentals</div>
+                        <div class="session-info">
+                            <h3 class="session-title">Prompting Mastery</h3>
+                            <div class="session-subtitle">Zero-Shot Prompting Fundamentals</div>
+                        </div>
                     </div>
                     <div class="session-content">
                         <p class="session-description">Transform vague requests into precise business outcomes. Learn to communicate with AI like a top executive—clear, specific, results-driven. Reduce project delays by 60% through better AI direction and eliminate the "trial and error" approach that wastes valuable time.</p>
@@ -1404,8 +1515,10 @@
                 <div class="session-card">
                     <div class="session-header">
                         <div class="session-number">Session 2</div>
-                        <h3 class="session-title">Contextual Direction</h3>
-                        <div class="session-subtitle">Role-Based and Few-Shot Prompting</div>
+                        <div class="session-info">
+                            <h3 class="session-title">Contextual Direction</h3>
+                            <div class="session-subtitle">Role-Based and Few-Shot Prompting</div>
+                        </div>
                     </div>
                     <div class="session-content">
                         <p class="session-description">Master contextual leadership to get AI responses that match your company culture and standards. Learn to assign roles, provide examples, and structure outputs that align with your organizational needs—turning AI into your most effective team member.</p>
@@ -1468,8 +1581,10 @@ Step 3 — Tutor Suggestions (copyable)
                 <div class="session-card">
                     <div class="session-header">
                         <div class="session-number">Session 3</div>
-                        <h3 class="session-title">Strategic Reasoning</h3>
-                        <div class="session-subtitle">Multi-Step Thinking & Problem Decomposition</div>
+                        <div class="session-info">
+                            <h3 class="session-title">Strategic Reasoning</h3>
+                            <div class="session-subtitle">Multi-Step Thinking & Problem Decomposition</div>
+                        </div>
                     </div>
                     <div class="session-content">
                         <p class="session-description">Develop strategic thinking capabilities that scale across your organization. Master the art of breaking down complex business challenges into systematic AI-assisted analysis. Essential for data-driven decision making and competitive intelligence.</p>
@@ -1528,8 +1643,10 @@ Checklist: 0/7 | Score: N/A
                 <div class="session-card">
                     <div class="session-header">
                         <div class="session-number">Session 4</div>
-                        <h3 class="session-title">Orchestrated Workflow</h3>
-                        <div class="session-subtitle">Complex Multi-Agent Coordination</div>
+                        <div class="session-info">
+                            <h3 class="session-title">Orchestrated Workflow</h3>
+                            <div class="session-subtitle">Complex Multi-Agent Coordination</div>
+                        </div>
                     </div>
                     <div class="session-content">
                         <p class="session-description">Build enterprise-grade AI workflows that transform how your organization operates. Learn to orchestrate multiple AI agents for complex projects, creating scalable processes that deliver consistent results and measurable business value.</p>
@@ -1587,8 +1704,10 @@ Checklist: 0/7 | Score: N/A
                 <div class="session-card">
                     <div class="session-header">
                         <div class="session-number">Session 5</div>
-                        <h3 class="session-title">Adaptive Partnership</h3>
-                        <div class="session-subtitle">Dynamic AI Collaboration Patterns</div>
+                        <div class="session-info">
+                            <h3 class="session-title">Adaptive Partnership</h3>
+                            <div class="session-subtitle">Dynamic AI Collaboration Patterns</div>
+                        </div>
                     </div>
                     <div class="session-content">
                         <p class="session-description">Master adaptive leadership in the AI era. Develop the executive skill of pivoting AI strategies in real-time as market conditions change, ensuring your organization stays agile and competitive in dynamic business environments.</p>
@@ -1648,8 +1767,10 @@ Passing: ≥80</pre>
                 <div class="session-card">
                     <div class="session-header">
                         <div class="session-number">Session 6</div>
-                        <h3 class="session-title">Warm Orchestration</h3>
-                        <div class="session-subtitle">Human-AI Synergy & Advanced Techniques</div>
+                        <div class="session-info">
+                            <h3 class="session-title">Warm Orchestration</h3>
+                            <div class="session-subtitle">Human-AI Synergy & Advanced Techniques</div>
+                        </div>
                     </div>
                     <div class="session-content">
                         <p class="session-description">Achieve executive mastery of AI collaboration. Develop an intuitive command of AI that becomes your natural leadership advantage—seamless, powerful, and transformative for your entire organization's productivity and innovation capacity.</p>
@@ -1769,9 +1890,6 @@ Advanced Techniques Mastered:
                     </div>
                     <div class="chat-container">
                         <div class="chat-messages" id="chatMessages">
-                            <div class="welcome-message">
-                                Select a learning module above (1-6) to begin your interactive AI literacy training!
-                            </div>
                         </div>
                         <div class="chat-input-area">
                             <div class="chat-input-container">
@@ -1810,12 +1928,18 @@ Advanced Techniques Mastered:
         // Initialize Mermaid
         mermaid.initialize({ 
             startOnLoad: true, 
-            theme: 'default',
+            theme: 'base',
             themeVariables: {
-                primaryColor: '#0066cc',
-                primaryTextColor: '#2d3748',
-                primaryBorderColor: '#ff8c00',
-                lineColor: '#4a5568'
+                primaryColor: '#f0f9ff',
+                primaryTextColor: '#1e293b',
+                primaryBorderColor: '#0066cc',
+                lineColor: '#64748b',
+                secondaryColor: '#fef3c7',
+                tertiaryColor: '#fff7ed',
+                background: '#ffffff',
+                mainBkg: '#f8fafc',
+                secondBkg: '#e2e8f0',
+                tertiaryBkg: '#f1f5f9'
             }
         });
 
@@ -1842,6 +1966,83 @@ Advanced Techniques Mastered:
             if (!hideModal) {
                 // Show modal after a short delay to ensure page is loaded
                 setTimeout(showWelcomeModal, 500);
+            }
+        }
+
+        // Download All Sessions Function
+        async function downloadAllSessions() {
+            const downloadBtn = document.querySelector('.download-btn');
+            const originalText = downloadBtn.innerHTML;
+            
+            try {
+                // Show loading state
+                downloadBtn.innerHTML = `
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="animation: spin 1s linear infinite;">
+                        <path d="M21 12a9 9 0 11-6.219-8.56"/>
+                    </svg>
+                `;
+                downloadBtn.disabled = true;
+                
+                const zip = new JSZip();
+                
+                // List of all session files to include
+                const sessionFiles = [
+                    'session-1-prompting-mastery.md',
+                    'session-2-contextual-direction.md',
+                    'session-3-strategic-reasoning.md',
+                    'session-4-orchestrated-workflow.md',
+                    'session-5-adaptive-partnership.md',
+                    'session-6-warm-orchestration.md'
+                ];
+                
+                // Additional files to include
+                const additionalFiles = [
+                    'USER-GUIDE.md',
+                    'README.md',
+                    'CHEAT-SHEET.md'
+                ];
+                
+                // Combine all files
+                const allFiles = [...sessionFiles, ...additionalFiles];
+                
+                // Fetch and add each file to the zip
+                for (const filename of allFiles) {
+                    try {
+                        const response = await fetch(filename);
+                        if (response.ok) {
+                            const content = await response.text();
+                            zip.file(filename, content);
+                        } else {
+                            console.warn(`Could not fetch ${filename}: ${response.status}`);
+                        }
+                    } catch (error) {
+                        console.warn(`Error fetching ${filename}:`, error);
+                    }
+                }
+                
+                // Generate the zip file
+                const zipBlob = await zip.generateAsync({type: 'blob'});
+                
+                // Create download link
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(zipBlob);
+                link.download = 'worksona-ai-literacy-sessions.zip';
+                
+                // Trigger download
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                // Clean up the URL object
+                URL.revokeObjectURL(link.href);
+                
+            } catch (error) {
+                console.error('Error creating zip file:', error);
+                alert('Sorry, there was an error creating the download. Please try again.');
+            } finally {
+                // Restore button state
+                downloadBtn.innerHTML = originalText;
+                downloadBtn.disabled = false;
             }
         }
 
